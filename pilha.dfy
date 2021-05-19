@@ -27,15 +27,34 @@ class {:autocontracts} Pilha
         Conteudo := [];
     }
 
-     method Empilhar(e:nat) returns (valido:bool)
+    method Empilhar(e:nat) returns (valido:bool)
 
-     method Desempilhar()
+    method Desempilhar()
 
-     method Ler() returns (n:nat) //precisa retornar ou somente printar?.
+    method Ler() returns (n:nat) //precisa retornar ou somente printar?.
 
-     method Cheia() returns (valido:bool)
+    method Cheia() returns (valido:bool)
+    ensures Conteudo == old(Conteudo)
+    ensures valido == true || valido == false
+    {
+        if (tail == max){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-     method Vazia() returns (valido:bool)
+
+    method Vazia() returns (valido:bool)
+    ensures Conteudo == old(Conteudo)
+    ensures valido == true || valido == false
+    {
+        if (tail == 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     method Quantidade() returns (n:nat)
     ensures n == |Conteudo|
@@ -59,6 +78,10 @@ method Main()
     var pilha := new Pilha(5);
     assert pilha.TamanhoMaximo == 5;
     assert pilha.Conteudo == [];
- //   var q := pilha.Quantidade();
- //   assert q == 0;
+    var q := pilha.Quantidade();
+    assert q == 0;
+    var vazia := pilha.Vazia();
+  //  assert vazia == true; //VER SE TA CERTO expressao ==>
+  //  var cheia := pilha.Cheia();
+  //  assert cheia == true; //VER SE TA CERTO expressao ==>
 }
