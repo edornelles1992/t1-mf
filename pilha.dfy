@@ -3,16 +3,16 @@ class {:autocontracts} Pilha
     ghost const TamanhoMaximo: nat;
     ghost var Conteudo: seq<nat>;
     var lista: array<nat>;
-    var tail: nat;
+    var posPilha: nat;
     const max: nat;
 
     predicate Valid()
     {
         max > 0
         && max == lista.Length
-        && 0 <= tail <= max
+        && 0 <= posPilha <= max
         && TamanhoMaximo == max
-        && Conteudo == lista[0..tail]
+        && Conteudo == lista[0..posPilha]
     }
 
     constructor (n:nat)
@@ -22,34 +22,51 @@ class {:autocontracts} Pilha
     {
         max := n;
         lista := new nat[n];
-        tail := 0;
+        posPilha := 0;
         TamanhoMaximo := max;
         Conteudo := [];
     }
 
     method Empilhar(e:nat) returns (valido:bool)
+    requires |Conteudo| < TamanhoMaximo
+    ensures Conteudo == old(Conteudo) + [e]
+    {
+        if (posPilha <= lista.Length){
+            lista[posPilha] := e;
+            posPilha := posPilha + 1;
+            Conteudo := Conteudo + [e];
+            return true;
+        }
+        return false;
+    } 
 
-    method Desempilhar()
+   // method Desempilhar()
 
-    method Ler() returns (n:nat) //precisa retornar ou somente printar?.
+    method Ler()//precisa retornar ou somente printar?.
+    ensures Conteudo == old(Conteudo)
+    ensures posPilha == old(posPilha)
+    {
+        if (posPilha > 0) {
+          print lista[posPilha - 1];
+        } else {
+          print "\nNenhum elemento na pilha para ser lido"; 
+        }
+    }
 
     method Cheia() returns (valido:bool)
     ensures Conteudo == old(Conteudo)
-    ensures valido == true || valido == false
     {
-        if (tail == max){
+        if (posPilha == max){
             return true;
         } else {
             return false;
         }
     }
 
-
     method Vazia() returns (valido:bool)
     ensures Conteudo == old(Conteudo)
-    ensures valido == true || valido == false
     {
-        if (tail == 0){
+        if (posPilha == 0){
             return true;
         } else {
             return false;
@@ -60,7 +77,7 @@ class {:autocontracts} Pilha
     ensures n == |Conteudo|
     ensures Conteudo == old(Conteudo)
     {
-        n := tail;
+        n := posPilha;
     }
 
     method QuantidadeMaxima() returns (n:nat)
@@ -70,7 +87,7 @@ class {:autocontracts} Pilha
         return max;
     }
 
-     method InvertePilha() 
+//    method InvertePilha() 
 }
 
 method Main()
@@ -81,6 +98,7 @@ method Main()
     var q := pilha.Quantidade();
     assert q == 0;
     var vazia := pilha.Vazia();
+    pilha.Ler();
   //  assert vazia == true; //VER SE TA CERTO expressao ==>
   //  var cheia := pilha.Cheia();
   //  assert cheia == true; //VER SE TA CERTO expressao ==>
