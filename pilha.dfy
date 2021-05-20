@@ -101,9 +101,6 @@ method Main()
     assert q == 0;
     var vazia := pilha.Vazia();
     pilha.Ler();
-  //  assert vazia == true; //VER SE TA CERTO expressao ==>
-  //  var cheia := pilha.Cheia();
-  //  assert cheia == true; //VER SE TA CERTO expressao ==>
     assert vazia == true; 
     var cheia := pilha.Cheia();
     assert cheia == false; 
