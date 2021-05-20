@@ -55,6 +55,7 @@ class {:autocontracts} Pilha
 
     method Cheia() returns (valido:bool)
     ensures Conteudo == old(Conteudo)
+    ensures valido <==> (posPilha == max) //esta cheia se e somente se posPilha == max
     {
         if (posPilha == max){
             return true;
@@ -65,6 +66,7 @@ class {:autocontracts} Pilha
 
     method Vazia() returns (valido:bool)
     ensures Conteudo == old(Conteudo)
+    ensures valido <==> (posPilha == 0)  // esta vazio se e somente se posPilha == 0
     {
         if (posPilha == 0){
             return true;
@@ -102,4 +104,7 @@ method Main()
   //  assert vazia == true; //VER SE TA CERTO expressao ==>
   //  var cheia := pilha.Cheia();
   //  assert cheia == true; //VER SE TA CERTO expressao ==>
+    assert vazia == true; 
+    var cheia := pilha.Cheia();
+    assert cheia == false; 
 }
