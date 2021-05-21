@@ -100,7 +100,24 @@ class {:autocontracts} Pilha
         return max;
     }
 
-//    method InvertePilha() 
+/*     method InvertePilha()   
+    requires |Conteudo| < TamanhoMaximo
+    ensures forall i :: 0 <= i < posPilha ==> lista[i] == old(lista[(posPilha - i) - 1]);
+    ensures Conteudo == lista[..max]
+    {   
+        var novaLista: array<int>;
+        var i := 0;
+        novaLista := new int[max];
+        while i < posPilha
+        decreases posPilha - i
+        {  
+            novaLista[i] := lista[(posPilha - i) - 1];
+            i := i + 1;
+        }
+
+        lista := novaLista;
+        Conteudo := lista[..max];
+    } */
 }
 
 method Main()
