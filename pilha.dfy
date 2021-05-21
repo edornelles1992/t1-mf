@@ -1,10 +1,10 @@
 class {:autocontracts} Pilha
 {
-    ghost const TamanhoMaximo: nat;
-    ghost var Conteudo: seq<nat>;
-    var lista: array<nat>;
-    var posPilha: nat;
-    const max: nat;
+    ghost const TamanhoMaximo: int;
+    ghost var Conteudo: seq<int>;
+    var lista: array<int>;
+    var posPilha: int;
+    const max: int;
 
     predicate Valid()
     {
@@ -15,23 +15,24 @@ class {:autocontracts} Pilha
         && Conteudo == lista[0..posPilha]
     }
 
-    constructor (n:nat)
+    constructor (n:int)
     requires n > 0
     ensures TamanhoMaximo == n
     ensures Conteudo == []
     {
         max := n;
-        lista := new nat[n];
+        lista := new int[n];
         posPilha := 0;
         TamanhoMaximo := max;
         Conteudo := [];
     }
 
-    method Empilhar(e:nat) returns (valido:bool)
+    method Empilhar(e:int) returns (valido:bool)
     requires |Conteudo| < TamanhoMaximo
     ensures Conteudo == old(Conteudo) + [e]
+    ensures valido <==> (e in Conteudo)
     {
-        if (posPilha <= lista.Length){
+        if (posPilha <= lista.Length){ //valida espaço na pilha
             lista[posPilha] := e;
             posPilha := posPilha + 1;
             Conteudo := Conteudo + [e];
@@ -40,7 +41,17 @@ class {:autocontracts} Pilha
         return false;
     } 
 
-   // method Desempilhar()
+    method Desempilhar()
+    requires |Conteudo| < TamanhoMaximo
+    ensures Conteudo == lista[0..posPilha]
+    {
+        if (posPilha > 0){ //testa pilha vazia
+            posPilha := posPilha - 1;
+            lista[posPilha] :=  0;
+            Conteudo := lista[0..posPilha];
+        }
+         print "\nNenhum elemento na pilha para ser desempilhado"; 
+    }
 
     method Ler()//precisa retornar ou somente printar?.
     ensures Conteudo == old(Conteudo)
@@ -75,14 +86,14 @@ class {:autocontracts} Pilha
         }
     }
 
-    method Quantidade() returns (n:nat)
+    method Quantidade() returns (n:int)
     ensures n == |Conteudo|
     ensures Conteudo == old(Conteudo)
     {
         n := posPilha;
     }
 
-    method QuantidadeMaxima() returns (n:nat)
+    method QuantidadeMaxima() returns (n:int)
     ensures n == TamanhoMaximo
     ensures Conteudo == old(Conteudo)
     {
@@ -104,4 +115,8 @@ method Main()
     assert vazia == true; 
     var cheia := pilha.Cheia();
     assert cheia == false; 
+
+    var empilhou := pilha.Empilhar(1);
+    assert empilhou == true;
+    pilha.Desempilhar();
 }
