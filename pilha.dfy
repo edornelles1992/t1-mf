@@ -1,7 +1,9 @@
 class {:autocontracts} Pilha
 {
+    //abstração
     ghost const TamanhoMaximo: int;
     ghost var Conteudo: seq<int>;
+    //implementação
     var lista: array<int>;
     var posPilha: int;
     const max: int;
@@ -28,17 +30,16 @@ class {:autocontracts} Pilha
     }
 
     method Empilhar(e:int) returns (valido:bool)
-    requires |Conteudo| < TamanhoMaximo
-    ensures Conteudo == old(Conteudo) + [e]
-    ensures valido <==> (e in Conteudo)
+    ensures valido <==> (Conteudo == old(Conteudo) + [e]) && posPilha > old(posPilha) && old(posPilha) < max && lista[old(posPilha)] == e
+    ensures !valido <==> Conteudo == old(Conteudo) && posPilha == old(posPilha) && posPilha == max
     {
-        if (posPilha <= lista.Length){ //valida espaço na pilha
+        if (posPilha < max){ //valida espaço na pilha
             lista[posPilha] := e;
             posPilha := posPilha + 1;
             Conteudo := Conteudo + [e];
             return true;
-        }
-        return false;
+        } 
+         return false;
     } 
 
     method Desempilhar()
@@ -122,8 +123,8 @@ class {:autocontracts} Pilha
 
 method Main()
 {
-    var pilha := new Pilha(5);
-    assert pilha.TamanhoMaximo == 5;
+    var pilha := new Pilha(3);
+    assert pilha.TamanhoMaximo == 3;
     assert pilha.Conteudo == [];
     var q := pilha.Quantidade();
     assert q == 0;
@@ -133,7 +134,19 @@ method Main()
     var cheia := pilha.Cheia();
     assert cheia == false; 
 
+    //adiciona valores na pilha...
     var empilhou := pilha.Empilhar(1);
     assert empilhou == true;
-    pilha.Desempilhar();
+
+    empilhou := pilha.Empilhar(2);
+    assert empilhou == true;
+
+    empilhou := pilha.Empilhar(3);
+    assert empilhou == true;
+
+    //tentando colocar sem espaço na pilha
+    empilhou := pilha.Empilhar(4);
+    assert empilhou == false;
+
+ //   pilha.Desempilhar();
 }
