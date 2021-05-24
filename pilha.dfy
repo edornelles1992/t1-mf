@@ -67,10 +67,11 @@ class {:autocontracts} Pilha
     }
 
     method Cheia() returns (valido:bool)
-    ensures valido <==> (posPilha == max) 
-    ensures !valido <==> (posPilha < max && posPilha >= 0)
+    ensures valido <==> Conteudo == old(Conteudo) && posPilha == old(posPilha) && posPilha == max  && valido == true    
+    ensures !valido <==> Conteudo == old(Conteudo) && posPilha == old(posPilha) &&  posPilha < max  && valido == false    
+    ensures Valid()
     {
-        if (posPilha == max){
+        if (posPilha == max){            
             return true;
         } else {
             return false;
@@ -130,7 +131,7 @@ method Main()
     var q := pilha.Quantidade();
     assert q == 0;
     var vazia := pilha.Vazia();
-    pilha.Ler();
+    pilha.Ler(); //tenta ler nao tendo elementos
     assert vazia == true; 
     var cheia := pilha.Cheia();
     assert cheia == false; 
@@ -145,6 +146,8 @@ method Main()
     empilhou := pilha.Empilhar(3);
     assert empilhou == true;
 
+    assert pilha.Conteudo == [1,2,3];
+
     //tentando colocar sem espaço na pilha
     empilhou := pilha.Empilhar(4);
     assert empilhou == false;
@@ -156,8 +159,13 @@ method Main()
     //desempilha dois elementos
     pilha.Desempilhar();
     pilha.Desempilhar();
+   print("\n");
+   print(pilha.posPilha);
+   print(pilha.lista.Length);   
 
+   assert |pilha.Conteudo| == pilha.posPilha;
+  // assert pilha.Conteudo == [1]; VALIDAR PQ TA DANDO ERRO
     //liberou espaços na pilha..
-    cheia := pilha.Cheia();
-   // assert cheia == false; TODO: validar pq n esta certo
+  //  cheia := pilha.Cheia();
+ //   assert cheia == false;
 }
