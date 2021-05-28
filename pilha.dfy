@@ -103,24 +103,22 @@ class {:autocontracts} Pilha
         return max;
     }
 
-/*     method InvertePilha()   
-    requires |Conteudo| < TamanhoMaximo
-    ensures forall i :: 0 <= i < posPilha ==> lista[i] == old(lista[(posPilha - i) - 1]);
-    ensures Conteudo == lista[..max]
+    /*
+    method InvertePilha()   
+    requires |Conteudo| > 0 && |Conteudo| <= TamanhoMaximo
+    ensures posPilha < max ==> forall j :: 0 <= j < posPilha ==> lista[j] == lista[posPilha - j];
+    ensures posPilha > 1 ==> Conteudo == lista[..posPilha]
     {   
-        var novaLista: array<int>;
-        var i := 0;
-        novaLista := new int[max];
+        var i := 1;
         while i < posPilha
-        decreases posPilha - i
+        decreases i 
         {  
-            novaLista[i] := lista[(posPilha - i) - 1];
+            lista[i] := lista[(posPilha - i)];
             i := i + 1;
+            Conteudo := lista[..posPilha];
         }
-
-        lista := novaLista;
-        Conteudo := lista[..max];
-    } */
+    } 
+    */
 }
 
 method Main()
@@ -157,15 +155,14 @@ method Main()
     assert cheia == true; 
 
     //desempilha dois elementos
-    pilha.Desempilhar();
-    pilha.Desempilhar();
-   print("\n");
-   print(pilha.posPilha);
-   print(pilha.lista.Length);   
+    //pilha.Desempilhar();
+    //pilha.Desempilhar();
 
-   assert |pilha.Conteudo| == pilha.posPilha;
   // assert pilha.Conteudo == [1]; VALIDAR PQ TA DANDO ERRO
     //liberou espaços na pilha..
   //  cheia := pilha.Cheia();
  //   assert cheia == false;
+
+
+
 }
