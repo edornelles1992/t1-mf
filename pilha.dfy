@@ -1,3 +1,4 @@
+//GRUPO: Eduardo Lima Dornelles e João Lucas de Almeida
 class {:autocontracts} Pilha
 {
     //abstração
@@ -51,8 +52,6 @@ class {:autocontracts} Pilha
               lista[posPilha] :=  0;
               Conteudo := lista[0..posPilha];
         }
-        return false;
-
     }
 
     method Ler()//precisa retornar ou somente printar?.
@@ -62,7 +61,7 @@ class {:autocontracts} Pilha
         if (posPilha > 0) {
           print lista[posPilha - 1];
         } else {
-          print "\nNenhum elemento na pilha para ser lido"; 
+          print "\nNenhum elemento na pilha para ser lido\n"; 
         }
     }
 
@@ -103,23 +102,28 @@ class {:autocontracts} Pilha
         return max;
     }
 
-    /*
-    method InvertePilha()   
-    requires |Conteudo| > 0 && |Conteudo| <= TamanhoMaximo
-    ensures posPilha < max ==> forall j :: 0 <= j < posPilha ==> lista[j] == lista[posPilha - j];
-    ensures posPilha > 1 ==> Conteudo == lista[..posPilha]
-    {   
-        var i := 1;
-        while i < posPilha
-        decreases i 
-        {  
-            lista[i] := lista[(posPilha - i)];
-            i := i + 1;
-            Conteudo := lista[..posPilha];
-        }
-    } 
-    */
     
+    method InvertePilha() returns (listaInvertida: array<int>)   
+    requires |Conteudo| > 0
+    ensures Conteudo == lista[0..posPilha]
+    ensures posPilha == old(posPilha)
+  //  ensures forall k :: 0 <= k < old(posPilha) ==> lista[k] == (lista[((posPilha)-1) - k]);
+    {   
+        var i := 0;
+        listaInvertida := new int[max];
+        while i < posPilha
+        modifies listaInvertida
+        invariant posPilha == old(posPilha)
+        invariant 0 <= i <= posPilha + 1
+        decreases posPilha - i
+        {  
+            i := i + 1;
+            listaInvertida[i - 1] := lista[posPilha - i];           
+        }
+        
+        lista := listaInvertida;
+        Conteudo := lista[0..posPilha];
+    }     
 }
 
 method Main()
@@ -165,4 +169,31 @@ method Main()
     assert pilha.Conteudo == s[0..pilha.posPilha]; // [1] == [1]
     assert pilha.Conteudo[0] == s[0];
 
+    empilhou := pilha.Empilhar(2);
+    assert empilhou == true;
+
+    empilhou := pilha.Empilhar(3);
+    assert empilhou == true;
+
+    s := pilha.lista[..];
+    print(s);
+    assert pilha.posPilha == 3; //3 elementos na pilha novamente
+    assert pilha.Conteudo == s[0..pilha.posPilha];
+    //compara se o conteudo esta igual a lista..
+    assert pilha.Conteudo[0] == s[0];
+    assert pilha.Conteudo[1] == s[1];
+    assert pilha.Conteudo[2] == s[2];
+  //  assert pilha.Conteudo == [1,2,3];
+     
+    var listaInvertida := pilha.InvertePilha();
+
+    s := pilha.lista[..];
+    assert pilha.posPilha == 3; //3 elementos na pilha novamente - invertidos
+    assert pilha.Conteudo == s[0..pilha.posPilha];
+    //compara se o conteudo esta igual a lista..
+    assert pilha.Conteudo[0] == s[0];
+    assert pilha.Conteudo[1] == s[1];
+    assert pilha.Conteudo[2] == s[2];
+  //  assert pilha.Conteudo == [3,2,1];
+    print(s);
 }
