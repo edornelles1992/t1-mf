@@ -51,6 +51,8 @@ class {:autocontracts} Pilha
               lista[posPilha] :=  0;
               Conteudo := lista[0..posPilha];
         }
+        return false;
+
     }
 
     method Ler()//precisa retornar ou somente printar?.
@@ -117,6 +119,7 @@ class {:autocontracts} Pilha
         }
     } 
     */
+    
 }
 
 method Main()
@@ -159,19 +162,7 @@ method Main()
     var s := pilha.lista[..];
     //valida conteudo com o q tem na pilha..
     assert pilha.posPilha == 1; //pos 1 = tem 1 elemento na pilha
-    assert pilha.Conteudo == s[0..pilha.posPilha];
+    assert pilha.Conteudo == s[0..pilha.posPilha]; // [1] == [1]
     assert pilha.Conteudo[0] == s[0];
-
-//    print(s);
-//    print(pilha.posPilha);
-   // assert s == [1 0,0];
-  //  assert pilha.lista[0] == 1;
-   // assert 1 in pilha.lista[..];
-  // assert pilha.lista[0] == 1; //VALIDAR PQ TA DANDO ERRO
-    //liberou espaços na pilha..
-  //  cheia := pilha.Cheia();
- //   assert cheia == false;
-
-
 
 }
