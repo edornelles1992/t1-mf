@@ -43,15 +43,13 @@ class {:autocontracts} Pilha
     } 
 
     method Desempilhar()
-    requires |Conteudo| <= TamanhoMaximo
-    ensures Conteudo == lista[0..posPilha]
-    {
-        if (posPilha > 0){ //testa pilha vazia
-            posPilha := posPilha - 1;
-            lista[posPilha] :=  0;
-            Conteudo := lista[0..posPilha];
-        } else {
-         print "\nNenhum elemento na pilha para ser desempilhado"; 
+    ensures if old(posPilha) > 0 then  posPilha == old(posPilha) - 1 && lista[posPilha] ==  0  && Conteudo == lista[0..posPilha] && |Conteudo| == posPilha
+    else |Conteudo| == posPilha && Conteudo == old(Conteudo) && posPilha == old(posPilha)
+    {      
+        if (posPilha > 0) {
+              posPilha := posPilha - 1;            
+              lista[posPilha] :=  0;
+              Conteudo := lista[0..posPilha];
         }
     }
 
@@ -155,10 +153,21 @@ method Main()
     assert cheia == true; 
 
     //desempilha dois elementos
-    //pilha.Desempilhar();
-    //pilha.Desempilhar();
+    pilha.Desempilhar();
+    pilha.Desempilhar();
 
-  // assert pilha.Conteudo == [1]; VALIDAR PQ TA DANDO ERRO
+    var s := pilha.lista[..];
+    //valida conteudo com o q tem na pilha..
+    assert pilha.posPilha == 1; //pos 1 = tem 1 elemento na pilha
+    assert pilha.Conteudo == s[0..pilha.posPilha];
+    assert pilha.Conteudo[0] == s[0];
+
+//    print(s);
+//    print(pilha.posPilha);
+   // assert s == [1 0,0];
+  //  assert pilha.lista[0] == 1;
+   // assert 1 in pilha.lista[..];
+  // assert pilha.lista[0] == 1; //VALIDAR PQ TA DANDO ERRO
     //liberou espaços na pilha..
   //  cheia := pilha.Cheia();
  //   assert cheia == false;
